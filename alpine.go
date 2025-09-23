@@ -2,8 +2,8 @@
 package alpine
 
 import (
-	"github.com/plainkit/html"
 	"github.com/plainkit/alpine/js"
+	"github.com/plainkit/html"
 )
 
 // Core Alpine.js directives

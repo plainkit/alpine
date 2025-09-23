@@ -22,435 +22,319 @@ func main() {
 			Head(
 				Meta(Charset("utf-8")),
 				Meta(Name("viewport"), Content("width=device-width, initial-scale=1.0")),
-				HeadTitle(Text("Alpine.js with Plain Demo")),
+				HeadTitle(Text("Todo App")),
 				Script(ScriptSrc("/js/alpine.min.js"), Defer()),
 				HeadStyle(Text(`
-					body {
-						font-family: system-ui, -apple-system, sans-serif;
-						max-width: 800px;
-						margin: 2rem auto;
-						padding: 0 1rem;
-						line-height: 1.6;
-						color: #1f2937;
-						background: #fafafa;
-					}
+					@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-					h1 {
-						color: #111827;
-						border-bottom: 2px solid #d1d5db;
-						padding-bottom: 0.5rem;
-					}
-
-					h2 {
-						color: #374151;
-						padding: 0;
+					* {
 						margin: 0;
+						padding: 0;
+						box-sizing: border-box;
+						font-family: Inter, sans-serif;
+					}
+
+					:root {
+						--background: #ffffff;
+						--foreground: #0a0a0a;
+						--card: #ffffff;
+						--primary: #0a0a0a;
+						--primary-foreground: #fafafa;
+						--secondary: #f5f5f5;
+						--secondary-foreground: #0a0a0a;
+						--muted-foreground: #737373;
+						--border: #e5e5e5;
+						--radius: 0.5rem;
+					}
+
+					body {
+						background: var(--background);
+						color: var(--foreground);
+						line-height: 1.5;
+						min-height: 100vh;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						padding: 1rem;
 					}
 
 					.container {
-						margin: 1rem;
-						padding: 1rem;
-						background: #f3f4f6;
-						border-radius: 12px;
-						border: 1px solid #e5e7eb;
+						max-width: 500px;
+						width: 100%;
+						background: var(--card);
+						border: 1px solid var(--border);
+						border-radius: var(--radius);
+						padding: 2rem;
+						box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+					}
+
+					h1 {
+						font-family: Inter, sans-serif;
+						font-size: 2rem;
+						font-weight: 800;
+						margin-bottom: 0.5rem;
+						text-align: center;
+						letter-spacing: -0.025em;
+					}
+
+					.subtitle {
+						color: var(--muted-foreground);
+						text-align: center;
+						margin-bottom: 2rem;
+						font-size: 0.875rem;
+					}
+
+					.add-todo {
+						display: flex;
+						gap: 0.5rem;
+						margin-bottom: 1.5rem;
+					}
+
+					input {
+						flex: 1;
+						padding: 0.5rem 0.75rem;
+						border: 1px solid var(--border);
+						border-radius: calc(var(--radius) - 2px);
+						font-size: 0.875rem;
+						outline: none;
+						transition: border-color 0.2s;
+					}
+
+					input:focus {
+						border-color: var(--primary);
+						box-shadow: 0 0 0 2px rgb(0 0 0 / 0.1);
 					}
 
 					button {
 						padding: 0.5rem 1rem;
-						margin: 0.5rem;
-						cursor: pointer;
-						background: #4b5563;
-						color: white;
+						background: var(--primary);
+						color: var(--primary-foreground);
 						border: none;
-						border-radius: 6px;
-						transition: all 0.2s;
-						font-weight: 500;
+						border-radius: calc(var(--radius) - 2px);
+						font-size: 0.875rem;
+						font-weight: 600;
+						cursor: pointer;
+						transition: all 0.2s ease;
+						white-space: nowrap;
+						box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 					}
 
 					button:hover {
-						background: #374151;
+						background: rgb(0 0 0 / 0.8);
+						box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 						transform: translateY(-1px);
-						box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 					}
 
-					button:active {
-						transform: translateY(0);
+					button.secondary {
+						background: var(--secondary);
+						color: var(--secondary-foreground);
+						border: 1px solid var(--border);
+						padding: 0.25rem 0.5rem;
+						font-size: 0.75rem;
 					}
 
-					button.active {
-						background: #1f2937;
-						font-weight: bold;
-						box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+					button.secondary:hover {
+						background: rgb(0 0 0 / 0.05);
 					}
 
-					.hidden { display: none; }
-
-					.card {
-						border: 1px solid #d1d5db;
-						padding: 1.25rem;
-						margin: 1rem 0;
-						border-radius: 10px;
-						background: white;
-						box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-					}
-
-					/* Todo form styles */
-					form {
-						display: flex;
-						gap: 0.5rem;
-						margin-bottom: 1rem;
-					}
-
-					input[type="text"] {
-						flex: 1;
-						padding: 0.75rem;
-						border: 2px solid #e5e7eb;
-						border-radius: 6px;
-						font-size: 1rem;
-						background: white;
-						transition: all 0.2s;
-					}
-
-					input[type="text"]:focus {
-						outline: none;
-						border-color: #9ca3af;
-						background: #fafafa;
-						box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
-					}
-
-					input[type="text"]::placeholder {
-						color: #9ca3af;
-					}
-
-					form button {
-						background: #6b7280;
-						padding: 0.75rem 1.5rem;
-						margin: 0;
-						font-weight: 600;
-					}
-
-					form button:hover {
-						background: #4b5563;
-					}
-
-					input[type="checkbox"] {
-						margin-right: 0.75rem;
-						width: 18px;
-						height: 18px;
-						cursor: pointer;
-						accent-color: #6b7280;
+					.todo-list {
+						list-style: none;
 					}
 
 					.todo-item {
 						display: flex;
 						align-items: center;
-						padding: 1rem;
-						margin: 0.5rem 0;
-						background: white;
-						border-radius: 8px;
-						border: 1px solid #e5e7eb;
-						transition: all 0.3s;
+						gap: 0.75rem;
+						padding: 0.75rem 0;
+						border-bottom: 1px solid var(--border);
 					}
 
-					.todo-item:hover {
-						box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-						border-color: #d1d5db;
+					.todo-item:last-child {
+						border-bottom: none;
 					}
 
-					.todo-item.done {
-						background: #f9fafb;
-						opacity: 0.6;
-					}
-
-					.todo-item span {
-						flex: 1;
-						margin: 0 1rem;
-						font-size: 1.05rem;
-						color: #374151;
-					}
-
-					.todo-item.done span {
-						text-decoration: line-through;
-						color: #9ca3af;
-					}
-
-					.todo-item button {
-						background: #6b7280;
-						padding: 0.4rem 0.9rem;
-						font-size: 0.875rem;
-						margin: 0;
-					}
-
-					.todo-item button:hover {
-						background: #4b5563;
-					}
-
-					/* Counter styles */
-					.counter-display {
-						display: inline-block;
-						margin: 0 1.5rem;
-						font-weight: bold;
-						color: #1f2937;
-						min-width: 4rem;
-						text-align: center;
-						background: #f3f4f6;
-						border-radius: 8px;
-						padding: 0.5rem 1rem;
-						border: 2px solid #e5e7eb;
-					}
-
-					/* Dropdown styles */
-					.dropdown-container {
+					.todo-checkbox {
+						width: 1.25rem;
+						height: 1.25rem;
+						min-width: 1.25rem;
+						max-width: 1.25rem;
+						border: 2px solid var(--border);
+						border-radius: 0.375rem;
+						cursor: pointer;
+						appearance: none;
 						position: relative;
+						background: var(--background);
+						transition: all 0.2s ease;
+						flex-shrink: 0;
+						flex-grow: 0;
 						display: inline-block;
 					}
 
-					.dropdown-menu {
+					.todo-checkbox:hover {
+						border-color: var(--primary);
+						box-shadow: 0 0 0 2px rgb(0 0 0 / 0.1);
+					}
+
+					.todo-checkbox:checked {
+						background: var(--primary);
+						border-color: var(--primary);
+						box-shadow: 0 0 0 2px rgb(0 0 0 / 0.1);
+					}
+
+					.todo-checkbox:checked::after {
+						content: '✓';
 						position: absolute;
-						top: 100%;
-						left: 0;
-						margin-top: 0.5rem;
-						background: white;
-						border: 1px solid #d1d5db;
-						border-radius: 10px;
-						box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-						min-width: 160px;
-						z-index: 100;
+						top: 50%;
+						left: 50%;
+						transform: translate(-50%, -50%);
+						color: white;
+						font-size: 0.875rem;
+						font-weight: 700;
+						line-height: 1;
 					}
 
-					.dropdown-menu ul {
-						list-style: none;
-						padding: 0.5rem 0;
-						margin: 0;
+					.todo-checkbox:focus {
+						outline: 2px solid var(--primary);
+						outline-offset: 2px;
 					}
 
-					.dropdown-menu li {
-						padding: 0;
-						margin: 0;
-					}
-
-					.dropdown-menu a {
-						display: block;
-						padding: 0.75rem 1.25rem;
-						color: #374151;
-						text-decoration: none;
-						transition: background 0.15s;
-					}
-
-					.dropdown-menu a:hover {
-						background: #f3f4f6;
-						color: #1f2937;
-					}
-
-					.dropdown-menu li:first-child a {
-						border-radius: 10px 10px 0 0;
-					}
-
-					.dropdown-menu li:last-child a {
-						border-radius: 0 0 10px 10px;
-					}
-
-					/* Tab styles */
-					.tab-buttons {
-						display: flex;
-						gap: 0.5rem;
-						margin-bottom: 1.25rem;
-						background: #e5e7eb;
-						padding: 0.25rem;
-						border-radius: 8px;
-					}
-
-					.tab-buttons button {
-						background: transparent;
-						color: #6b7280;
-						margin: 0;
+					.todo-text {
 						flex: 1;
+						font-size: 0.875rem;
 					}
 
-					.tab-buttons button:hover {
-						background: rgba(255,255,255,0.5);
-						color: #374151;
+					.todo-text.completed {
+						text-decoration: line-through;
+						color: var(--muted-foreground);
 					}
 
-					.tab-buttons button.active {
-						background: white;
-						color: #1f2937;
-						box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+					.empty-state {
+						text-align: center;
+						padding: 3rem 1rem;
+						color: var(--muted-foreground);
+						font-size: 0.875rem;
 					}
 
-					[x-cloak] { display: none !important; }
+					.stats {
+						margin-top: 1.5rem;
+						padding-top: 1rem;
+						border-top: 1px solid var(--border);
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						font-size: 0.75rem;
+						color: var(--muted-foreground);
+					}
 				`)),
 			),
 			Body(
-				H1(Text("Alpine.js with Plain Demo")),
-
-				// Simple Toggle Example
 				Div(Class("container"),
-					H2(Text("Simple Toggle")),
-					Div(
-						alpine.XData("{ open: false }"),
-						Button(
-							alpine.AtClick("open = !open"),
-							Text("Toggle Content"),
-						),
-						Div(
-							alpine.XShow("open"),
-							Class("card"),
-							P(Text("This content is toggled with Alpine.js!")),
-						),
-					),
-				),
-
-				// Counter Example
-				Div(Class("container"),
-					H2(Text("Counter")),
-					Div(
-						alpine.XData("{ count: 0 }"),
-						Button(
-							alpine.AtClick("count++"),
-							Text("+"),
-						),
-						Span(
-							Class("counter-display"),
-							alpine.XText("count"),
-						),
-						Button(
-							alpine.AtClick("count--"),
-							Text("-"),
-						),
-					),
-				),
-
-				// Todo List Example
-				Div(Class("container"),
-					H2(Text("Todo List")),
-					Div(
-						alpine.XData(`{
-							todos: [
-								{ id: 1, text: 'Learn Alpine.js', done: false },
-								{ id: 2, text: 'Build with Plain', done: false }
-							],
+					alpine.XData(`{
 							newTodo: '',
+							todos: [
+								{id: 1, text: 'Learn Alpine.js', completed: false},
+								{id: 2, text: 'Build awesome UI', completed: false},
+								{id: 3, text: 'Deploy to production', completed: true}
+							],
+							nextId: 4,
 							addTodo() {
 								if (this.newTodo.trim()) {
 									this.todos.push({
-										id: Date.now(),
-										text: this.newTodo,
-										done: false
+										id: this.nextId++,
+										text: this.newTodo.trim(),
+										completed: false
 									});
 									this.newTodo = '';
 								}
 							},
-							removeTodo(id) {
-								this.todos = this.todos.filter(t => t.id !== id);
+							deleteTodo(id) {
+								this.todos = this.todos.filter(todo => todo.id !== id);
+							},
+							toggleTodo(id) {
+								const todo = this.todos.find(t => t.id === id);
+								if (todo) todo.completed = !todo.completed;
+							},
+							get completedCount() {
+								return this.todos.filter(t => t.completed).length;
+							},
+							get totalCount() {
+								return this.todos.length;
 							}
 						}`),
 
-						Form(
-							alpine.AtSubmitPrevent("addTodo()"),
-							Input(
-								InputType("text"),
-								alpine.XModel("newTodo"),
-								Placeholder("Add a todo..."),
-							),
-							Button(
-								ButtonType("submit"),
-								Text("Add Todo"),
-							),
-						),
+					H1(Text("Todo App")),
+					P(Class("subtitle"), Text("Stay organized and productive")),
 
-						Div(
-							Template(
-								alpine.XFor("todo in todos"),
-								alpine.Colon("key", "todo.id"),
-								Div(
-									Class("todo-item"),
-									alpine.ColonClass("{ 'done': todo.done }"),
-									Input(
-										InputType("checkbox"),
-										alpine.XModel("todo.done"),
-									),
-									Span(
-										alpine.XText("todo.text"),
-									),
-									Button(
-										alpine.AtClick("removeTodo(todo.id)"),
-										Text("Delete"),
-									),
+					Div(
+						Class("add-todo"),
+						Input(
+							InputType("text"),
+							Placeholder("Add a new todo..."),
+							alpine.XModel("newTodo"),
+							alpine.AtKeydownEnter("addTodo()"),
+						),
+						Button(
+							alpine.XOnClick("addTodo()"),
+							Text("Add"),
+						),
+					),
+
+					Div(
+						alpine.XShow("todos.length === 0"),
+						Class("empty-state"),
+						Text("No todos yet. Add one above to get started!"),
+					),
+
+					Ul(
+						Class("todo-list"),
+						alpine.XShow("todos.length > 0"),
+						Template(
+							alpine.XFor("todo in todos"),
+							Li(
+								Class("todo-item"),
+								Input(
+									InputType("checkbox"),
+									Class("todo-checkbox"),
+									alpine.XModel("todo.completed"),
+								),
+								Span(
+									Class("todo-text"),
+									alpine.XBindClass("{'completed': todo.completed}"),
+									alpine.XText("todo.text"),
+								),
+								Button(
+									Class("secondary"),
+									alpine.XOnClick("deleteTodo(todo.id)"),
+									Text("Delete"),
 								),
 							),
 						),
 					),
-				),
 
-				// Tabs Example
-				Div(Class("container"),
-					H2(Text("Tabs")),
 					Div(
-						alpine.XData("{ activeTab: 'tab1' }"),
-						Div(Class("tab-buttons"),
-							Button(
-								alpine.AtClick("activeTab = 'tab1'"),
-								alpine.ColonClass("{ 'active': activeTab === 'tab1' }"),
-								Text("Tab 1"),
-							),
-							Button(
-								alpine.AtClick("activeTab = 'tab2'"),
-								alpine.ColonClass("{ 'active': activeTab === 'tab2' }"),
-								Text("Tab 2"),
-							),
-							Button(
-								alpine.AtClick("activeTab = 'tab3'"),
-								alpine.ColonClass("{ 'active': activeTab === 'tab3' }"),
-								Text("Tab 3"),
-							),
-						),
-						Div(Class("card"),
-							Div(
-								alpine.XShow("activeTab === 'tab1'"),
-								P(Text("Content for Tab 1")),
-							),
-							Div(
-								alpine.XShow("activeTab === 'tab2'"),
-								P(Text("Content for Tab 2")),
-							),
-							Div(
-								alpine.XShow("activeTab === 'tab3'"),
-								P(Text("Content for Tab 3")),
-							),
-						),
-					),
-				),
-
-				// Dropdown Example
-				Div(Class("container"),
-					H2(Text("Dropdown")),
-					Div(Class("dropdown-container"),
-						alpine.XData("{ open: false }"),
+						Class("stats"),
+						alpine.XShow("todos.length > 0"),
+						Span(alpine.XText("`${completedCount} of ${totalCount} completed`")),
 						Button(
-							alpine.AtClick("open = !open"),
-							Text("Options ▼"),
-						),
-						Div(
-							alpine.XShow("open"),
-							alpine.AtClickAway("open = false"),
-							Class("dropdown-menu"),
-							Ul(
-								Li(A(Href("#"), Text("Option 1"))),
-								Li(A(Href("#"), Text("Option 2"))),
-								Li(A(Href("#"), Text("Option 3"))),
-							),
+							Class("secondary"),
+							alpine.XOnClick("todos = todos.filter(t => !t.completed)"),
+							alpine.XShow("completedCount > 0"),
+							Text("Clear completed"),
 						),
 					),
 				),
 			),
 		)
 
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = fmt.Fprint(w, "<!DOCTYPE html>\n")
-		_, _ = fmt.Fprint(w, Render(page))
+		w.Header().Set("Content-Type", "text/html")
+		_, _ = w.Write([]byte(Render(page)))
 	})
 
-	fmt.Println("Server starting on http://localhost:8080")
-	_ = http.ListenAndServe(":8080", nil)
+	fmt.Println("🚀 Alpine + Plain Demo Server starting on :8080")
+	fmt.Println("📦 Using embedded Alpine JavaScript (no CDN required)")
+	fmt.Println("🔗 Open http://localhost:8080 to view the demo")
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		panic(err)
+	}
 }
