@@ -20,11 +20,11 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		page := Html(
 			Head(
-				Meta(Charset("utf-8")),
-				Meta(Name("viewport"), Content("width=device-width, initial-scale=1.0")),
-				HeadTitle(Text("Todo App")),
-				Script(ScriptSrc("/js/alpine.min.js"), Defer()),
-				HeadStyle(Text(`
+				Meta(ACharset("utf-8")),
+				Meta(AName("viewport"), AContent("width=device-width, initial-scale=1.0")),
+				Title(Text("Todo App")),
+				Script(ASrc("/js/alpine.min.js"), ADefer()),
+				Style(Text(`
 					@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 					* {
@@ -228,7 +228,7 @@ func main() {
 				`)),
 			),
 			Body(
-				Div(Class("container"),
+				Div(AClass("container"),
 					alpine.XData(`{
 							newTodo: '',
 							todos: [
@@ -263,13 +263,13 @@ func main() {
 						}`),
 
 					H1(Text("Todo App")),
-					P(Class("subtitle"), Text("Stay organized and productive")),
+					P(AClass("subtitle"), Text("Stay organized and productive")),
 
 					Div(
-						Class("add-todo"),
+						AClass("add-todo"),
 						Input(
-							InputType("text"),
-							Placeholder("Add a new todo..."),
+							AType("text"),
+							APlaceholder("Add a new todo..."),
 							alpine.XModel("newTodo"),
 							alpine.AtKeydownEnter("addTodo()"),
 						),
@@ -281,29 +281,29 @@ func main() {
 
 					Div(
 						alpine.XShow("todos.length === 0"),
-						Class("empty-state"),
+						AClass("empty-state"),
 						Text("No todos yet. Add one above to get started!"),
 					),
 
 					Ul(
-						Class("todo-list"),
+						AClass("todo-list"),
 						alpine.XShow("todos.length > 0"),
 						Template(
 							alpine.XFor("todo in todos"),
 							Li(
-								Class("todo-item"),
+								AClass("todo-item"),
 								Input(
-									InputType("checkbox"),
-									Class("todo-checkbox"),
+									AType("checkbox"),
+									AClass("todo-checkbox"),
 									alpine.XModel("todo.completed"),
 								),
 								Span(
-									Class("todo-text"),
+									AClass("todo-text"),
 									alpine.XBindClass("{'completed': todo.completed}"),
 									alpine.XText("todo.text"),
 								),
 								Button(
-									Class("secondary"),
+									AClass("secondary"),
 									alpine.XOnClick("deleteTodo(todo.id)"),
 									Text("Delete"),
 								),
@@ -312,11 +312,11 @@ func main() {
 					),
 
 					Div(
-						Class("stats"),
+						AClass("stats"),
 						alpine.XShow("todos.length > 0"),
 						Span(alpine.XText("`${completedCount} of ${totalCount} completed`")),
 						Button(
-							Class("secondary"),
+							AClass("secondary"),
 							alpine.XOnClick("todos = todos.filter(t => !t.completed)"),
 							alpine.XShow("completedCount > 0"),
 							Text("Clear completed"),
